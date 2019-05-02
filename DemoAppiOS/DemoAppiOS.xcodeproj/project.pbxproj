@@ -152,7 +152,6 @@
 				B1991A0E613E260093169B63 /* Pods-DemoAppiOSUITests.debug.xcconfig */,
 				B7E5176A0F4196C609C4453A /* Pods-DemoAppiOSUITests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -238,6 +237,11 @@
 				TargetAttributes = {
 					402C8CF6227B1EE500A2DCE9 = {
 						CreatedOnToolsVersion = 10.2.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					402C8D0A227B1EE700A2DCE9 = {
 						CreatedOnToolsVersion = 10.2.1;
