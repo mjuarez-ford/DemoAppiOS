@@ -11,3 +11,7 @@
 
 
 #include "Pods/Target Support Files/Pods-DemoAppiOS/Pods-DemoAppiOS.debug.xcconfig"
+
+
+APP_ID = 
+APP_NAME =
