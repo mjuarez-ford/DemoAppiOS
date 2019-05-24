@@ -9,8 +9,9 @@
 import SmartDeviceLink
 
 class ProxyManager: NSObject {
-    private let appName = "Notify"
+    private let appName = "HelloWorld"
     private let appId = "App Id"
+    private let useTcp = true
     
     // Manager
     fileprivate var sdlManager: SDLManager!
@@ -22,18 +23,20 @@ class ProxyManager: NSObject {
         super.init()
         
         // Used for USB Connection
-        let lifecycleConfiguration = SDLLifecycleConfiguration(appName: appName, fullAppId: appId)
+        var lifecycleConfiguration = SDLLifecycleConfiguration(appName: appName, fullAppId: appId)
         
         // Used for TCP/IP Connection
-        // let lifecycleConfiguration = SDLLifecycleConfiguration(appName: appName, fullAppId: appId, ipAddress: "<#IP Address#>", port: <#Port#>)
+        if(useTcp){
+            lifecycleConfiguration = SDLLifecycleConfiguration(appName: appName, fullAppId: appId, ipAddress: "127.0.0.1", port: 12345)
+        }
         
         // App icon image
         if let appImage = UIImage(named: "DemoSDLIcon") {
-            let appIcon = SDLArtwork(image: appImage, name: "DemoSDLIcon", persistent: true, as: .JPG /* or .PNG */)
+            let appIcon = SDLArtwork(image: appImage, name: "DemoSDLIcon", persistent: true, as: .PNG)
             lifecycleConfiguration.appIcon = appIcon
         }
         
-        lifecycleConfiguration.shortAppName = "WelloWorld"
+        lifecycleConfiguration.shortAppName = "HelloWorld"
         lifecycleConfiguration.appType = .media
         
         let configuration = SDLConfiguration(lifecycle: lifecycleConfiguration, lockScreen: .enabled(), logging: .default(), fileManager: .default())

@@ -13,5 +13,13 @@
 #include "Pods/Target Support Files/Pods-DemoAppiOS/Pods-DemoAppiOS.debug.xcconfig"
 
 
-APP_ID = 
-APP_NAME = 
+APP_ID = 1234567890
+APP_NAME = SDLDemoApp
+APP_SHORTNAME = SDLApp
+APP_ICON = SDLImage
+
+
+USE_TCP = true
+TCP_PORT = 127.0.0.1
+TCP_IP = 12345
+
