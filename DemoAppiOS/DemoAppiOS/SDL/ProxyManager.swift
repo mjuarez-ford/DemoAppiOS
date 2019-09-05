@@ -9,6 +9,7 @@
 import SmartDeviceLink
 
 class ProxyManager: NSObject {
+    fileprivate var firstHMILevel: SDLHMILevel = .none
     private let appName = "HelloWorld"
     private let appId = "App Id"
     private let useTcp = true
@@ -39,7 +40,7 @@ class ProxyManager: NSObject {
         lifecycleConfiguration.shortAppName = "HelloWorld"
         lifecycleConfiguration.appType = .media
         
-        let configuration = SDLConfiguration(lifecycle: lifecycleConfiguration, lockScreen: .enabled(), logging: .default(), fileManager: .default())
+        let configuration = SDLConfiguration(lifecycle: lifecycleConfiguration, lockScreen: .enabled(), logging: loggSetUp(), fileManager: .default())
         
         sdlManager = SDLManager(configuration: configuration, delegate: self)
     }
@@ -52,6 +53,24 @@ class ProxyManager: NSObject {
             }
         }
     }
+    
+    func loggSetUp() -> SDLLogConfiguration{
+        let sdlLogConfig = SDLLogConfiguration.default()
+        sdlLogConfig.globalLogLevel = .verbose
+        sdlLogConfig.formatType = .detailed
+        return sdlLogConfig
+    }
+    
+    func backgroundColorSetup(lifecycleConfiguration: SDLLifecycleConfiguration) {
+        let green = SDLRGBColor(red: 126, green: 188, blue: 121)
+        let white = SDLRGBColor(red: 249, green: 251, blue: 254)
+        let grey = SDLRGBColor(red: 186, green: 198, blue: 210)
+        let darkGrey = SDLRGBColor(red: 57, green: 78, blue: 96)
+        lifecycleConfiguration.dayColorScheme = SDLTemplateColorScheme(primaryRGBColor: green, secondaryRGBColor: grey, backgroundRGBColor: white)
+        lifecycleConfiguration.nightColorScheme = SDLTemplateColorScheme(primaryRGBColor: green, secondaryRGBColor: grey, backgroundRGBColor: darkGrey)
+    }
+    
+    
 }
 
 //MARK: SDLManagerDelegate
@@ -61,6 +80,44 @@ extension ProxyManager: SDLManagerDelegate {
     }
     
     func hmiLevel(_ oldLevel: SDLHMILevel, didChangeToLevel newLevel: SDLHMILevel) {
-        print("Went from HMI level \(oldLevel) to HMI level \(newLevel)")
+        if newLevel != .none && firstHMILevel == .none {
+            // This is our first time in a non-`NONE` state
+            firstHMILevel = newLevel
+            //Send static menu RPCs
+        }
+        
+        switch newLevel {
+        case .full:
+            setViewOne()
+        case .limited: break
+        case .background: break
+        case .none: break
+        default: break
+        }
+    }
+}
+
+//MARK: LayoutMethods.
+extension ProxyManager {
+    func layoutSetup(layout :SDLPredefinedLayout) {
+        let display = SDLSetDisplayLayout(predefinedLayout:layout)
+        
+        sdlManager.send(request: display) { (request, response, error) in
+            if response?.resultCode == .success {
+                // The template has been set successfully
+            }
+        }
+    }
+    
+    func loadingScreen() {
+        layoutSetup(layout: .largeGraphicOnly)
+    }
+    
+    func cleanView() {
+        
+    }
+    
+    func setViewOne() {
+        layoutSetup(layout: .graphicWithText)
     }
 }
