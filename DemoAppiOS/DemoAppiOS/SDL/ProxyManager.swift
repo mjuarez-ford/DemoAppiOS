@@ -12,7 +12,7 @@ class ProxyManager: NSObject {
     fileprivate var firstHMILevel: SDLHMILevel = .none
     private let appName = "HelloWorld"
     private let appId = "App Id"
-    private let useTcp = true
+    private let useTcp = false
     
     // Manager
     fileprivate var sdlManager: SDLManager!
@@ -38,7 +38,7 @@ class ProxyManager: NSObject {
         }
         
         lifecycleConfiguration.shortAppName = "HelloWorld"
-        lifecycleConfiguration.appType = .media
+        lifecycleConfiguration.appType = .default
         
         let configuration = SDLConfiguration(lifecycle: lifecycleConfiguration, lockScreen: .enabled(), logging: loggSetUp(), fileManager: .default())
         
@@ -88,7 +88,7 @@ extension ProxyManager: SDLManagerDelegate {
         
         switch newLevel {
         case .full:
-            setViewOne()
+            layoutSetup(layout: .nonMedia)
         case .limited: break
         case .background: break
         case .none: break
@@ -100,24 +100,21 @@ extension ProxyManager: SDLManagerDelegate {
 //MARK: LayoutMethods.
 extension ProxyManager {
     func layoutSetup(layout :SDLPredefinedLayout) {
+        guard sdlManager.hmiLevel == .full else { return }
         let display = SDLSetDisplayLayout(predefinedLayout:layout)
+        sdlManager.send(request: display)
+        let screenManager = sdlManager.screenManager
+        screenManager.beginUpdates()
+        screenManager.textAlignment = .left
+        screenManager.textField1 = "Hello, this is MainField1."
+        screenManager.textField2 = "Hello, this is MainField2."
+        screenManager.textField3 = "Hello, this is MainField3."
+        screenManager.textField4 = "Hello, this is MainField4."
         
-        sdlManager.send(request: display) { (request, response, error) in
-            if response?.resultCode == .success {
-                // The template has been set successfully
-            }
-        }
+        screenManager.endUpdates(completionHandler: { (error) in
+            guard error != nil else { return }
+        })
+
     }
-    
-    func loadingScreen() {
-        layoutSetup(layout: .largeGraphicOnly)
-    }
-    
-    func cleanView() {
-        
-    }
-    
-    func setViewOne() {
-        layoutSetup(layout: .graphicWithText)
-    }
+
 }
