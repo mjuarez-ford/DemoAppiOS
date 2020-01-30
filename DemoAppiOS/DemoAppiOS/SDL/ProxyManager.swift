@@ -55,7 +55,7 @@ class ProxyManager: NSObject {
             if success {
                 
                 
-                //self.sdlManager.subscribe(to: .SDLDidReceiveWaypoint, observer: self, selector: #selector(self.waypointsDidUpdate(_:)))
+                self.sdlManager.subscribe(to: .SDLDidReceiveWaypoint, observer: self, selector: #selector(self.waypointsDidUpdate(_:)))
 
             }
         }
@@ -133,9 +133,11 @@ extension ProxyManager {
         if (waypointUpdate != nil && waypointUpdate?.waypoints != nil){
             let waypoints = waypointUpdate?.waypoints;
             waypoints?.forEach { point in
-                print("\(point.locationName), lat \(point.coordinate?.latitudeDegrees), long \(point.coordinate?.longitudeDegrees)")
-                sendAlert()
+                if(point.locationName != nil && point.coordinate != nil){
+                    print("Waypoints are in\(point.locationName), lat \(point.coordinate?.latitudeDegrees), long \(point.coordinate?.longitudeDegrees)")
+                }
             }
+            sendAlert(manager: sdlManager)
         }
     }
     
@@ -188,17 +190,20 @@ extension ProxyManager {
 }
 
 extension ProxyManager {
-    func sendAlert(){
+    func sendAlert(manager:SDLManager){
 
-        var nextPick = SDLSoftButton { (SDLOnButtonPress, SDLOnButtonEvent) in
+//        let nextPick = SDLSoftButton { (SDLOnButtonPress, SDLOnButtonEvent) in
+//            print("click on button add next")
+//        }
+        
+        let nextPick = SDLSoftButton(type: .text, text: "Add next", image: nil, highlighted: true, buttonId: 1004, systemAction: .stealFocus, handler: { buttonPress, buttonEvent in
+            guard buttonPress != nil else { return }
             print("click on button add next")
-        }
-        nextPick.systemAction = .stealFocus
-        nextPick.text = "Add next"
+        })
         
-        var alertAddNext = SDLAlert(alertText: "Next pick", softButtons: [nextPick], playTone: true, ttsChunks: nil, alertIcon: nil, cancelID: 4242)
+        let alertAddNext = SDLAlert(alertText: "Next pick", softButtons: [nextPick], playTone: true, ttsChunks: nil, alertIcon: nil, cancelID: 1023)
         
-        sdlManager.send(request: alertAddNext) { (request, response, error) in
+        manager.send(request: alertAddNext) { (request, response, error) in
             guard response?.success.boolValue == true else { return }
             print("AddNextUser")
         }
