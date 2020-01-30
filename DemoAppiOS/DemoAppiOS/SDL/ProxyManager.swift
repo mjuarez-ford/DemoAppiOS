@@ -10,8 +10,10 @@ import SmartDeviceLink
 
 class ProxyManager: NSObject {
     fileprivate var firstHMILevel: SDLHMILevel = .none
-    private let appName = "HelloWorld"
-    private let appId = "App Id"
+    //private let appName = "ANNA"
+    //private let appId = "1587324225"
+    private let appName = "Zify"
+    private let appId = "76a8f63403"
     private let useTcp = false
     
     // Manager
@@ -37,10 +39,12 @@ class ProxyManager: NSObject {
             lifecycleConfiguration.appIcon = appIcon
         }
         
-        lifecycleConfiguration.shortAppName = "HelloWorld"
+        lifecycleConfiguration.shortAppName = "Zify"
         lifecycleConfiguration.appType = .default
         
-        let configuration = SDLConfiguration(lifecycle: lifecycleConfiguration, lockScreen: .enabled(), logging: loggSetUp(), fileManager: .default())
+        //let configuration = SDLConfiguration(lifecycle: lifecycleConfiguration, lockScreen: .enabled(), logging: loggSetUp(), fileManager: .default())
+        
+        let configuration = SDLConfiguration(lifecycle: lifecycleConfiguration, lockScreen: .enabled(), logging: loggSetUp(), fileManager: .default(), encryption: .none)
         
         sdlManager = SDLManager(configuration: configuration, delegate: self)
     }
@@ -49,7 +53,10 @@ class ProxyManager: NSObject {
         // Start watching for a connection with a SDL Core
         sdlManager.start { (success, error) in
             if success {
-                // Your app has successfully connected with the SDL Core
+                
+                
+                //self.sdlManager.subscribe(to: .SDLDidReceiveWaypoint, observer: self, selector: #selector(self.waypointsDidUpdate(_:)))
+
             }
         }
     }
@@ -114,7 +121,87 @@ extension ProxyManager {
         screenManager.endUpdates(completionHandler: { (error) in
             guard error != nil else { return }
         })
+    }
+}
 
+//Location extencion.
+extension ProxyManager {
+    
+    @objc func waypointsDidUpdate(_ notification: SDLRPCNotificationNotification) {
+        print("subscribed to waypoint")
+        let waypointUpdate = notification.notification as? SDLOnWayPointChange
+        if (waypointUpdate != nil && waypointUpdate?.waypoints != nil){
+            let waypoints = waypointUpdate?.waypoints;
+            waypoints?.forEach { point in
+                print("\(point.locationName), lat \(point.coordinate?.latitudeDegrees), long \(point.coordinate?.longitudeDegrees)")
+                sendAlert()
+            }
+        }
+    }
+    
+    
+    func subscribeSL() {
+
+        let subscribeWaypoints = SDLSubscribeWayPoints()
+        self.sdlManager.send(request: subscribeWaypoints) { (request, response, error) in
+            guard error == nil, let response = response as? SDLSubscribeWayPointsResponse, response.success.boolValue == true else {
+                return
+            }
+            print("Subscribed");
+
+            // You are now subscribed!
+        }
     }
 
+    
+    
+    func sendLocation(lat: Double, long: Double, name: String) {
+        
+        let sendLocation = SDLSendLocation(longitude: long, latitude: lat, locationName: name, locationDescription: nil, address: nil, phoneNumber: nil, image: nil)
+        
+        //let sendLocation = SDLSendLocation(longitude: long, latitude: lat, locationName: "The Center", locationDescription: "Center of the United States", address: ["900 Whiting Dr", "Yankton, SD 57078"], phoneNumber: nil, image: nil)
+        
+        sdlManager.send(request: sendLocation) { (request, response, error) in
+            guard let response = response as? SDLSendLocationResponse, error == nil else {
+                
+                return
+            }
+
+            guard response.success.boolValue == true else {
+                switch response.resultCode {
+                case .invalidData:
+            
+                    NSLog("invalid = TEST")
+                    return
+                case .disallowed:
+                    NSLog("disallowed = TEST")
+                    return
+                default:
+                    NSLog("ERROR = TEST")
+                }
+                return
+            }
+        }
+    }
+    
+    
+}
+
+extension ProxyManager {
+    func sendAlert(){
+
+        var nextPick = SDLSoftButton { (SDLOnButtonPress, SDLOnButtonEvent) in
+            print("click on button add next")
+        }
+        nextPick.systemAction = .stealFocus
+        nextPick.text = "Add next"
+        
+        var alertAddNext = SDLAlert(alertText: "Next pick", softButtons: [nextPick], playTone: true, ttsChunks: nil, alertIcon: nil, cancelID: 4242)
+        
+        sdlManager.send(request: alertAddNext) { (request, response, error) in
+            guard response?.success.boolValue == true else { return }
+            print("AddNextUser")
+        }
+
+    }
 }
