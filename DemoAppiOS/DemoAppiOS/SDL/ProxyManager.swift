@@ -136,8 +136,7 @@ extension ProxyManager {
                 if(point.locationName != nil && point.coordinate != nil){
                     print("Waypoints are in\(point.locationName), lat \(point.coordinate?.latitudeDegrees), long \(point.coordinate?.longitudeDegrees)")
                 }
-            }
-            sendAlert(manager: sdlManager)
+            }        
         }
     }
     
@@ -190,7 +189,7 @@ extension ProxyManager {
 }
 
 extension ProxyManager {
-    func sendAlert(manager:SDLManager){
+    func sendAlert(){
 
 //        let nextPick = SDLSoftButton { (SDLOnButtonPress, SDLOnButtonEvent) in
 //            print("click on button add next")
@@ -203,7 +202,7 @@ extension ProxyManager {
         
         let alertAddNext = SDLAlert(alertText: "Next pick", softButtons: [nextPick], playTone: true, ttsChunks: nil, alertIcon: nil, cancelID: 1023)
         
-        manager.send(request: alertAddNext) { (request, response, error) in
+        sdlManager.send(request: alertAddNext) { (request, response, error) in
             guard response?.success.boolValue == true else { return }
             print("AddNextUser")
         }

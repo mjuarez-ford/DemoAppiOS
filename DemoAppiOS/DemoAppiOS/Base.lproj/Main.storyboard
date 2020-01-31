@@ -16,7 +16,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Just a simple Demo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yJV-Tx-OLZ">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Just a simple Demo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yJV-Tx-OLZ">
                                 <rect key="frame" x="62" y="300" width="250" height="34"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="yJV-Tx-OLZ" secondAttribute="height" multiplier="125:17" id="NaV-OF-Bau"/>
@@ -25,12 +25,21 @@
                                 <color key="textColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x51-q3-eIG">
-                                <rect key="frame" x="104" y="342" width="166" height="154.5"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x51-q3-eIG">
+                                <rect key="frame" x="22" y="342" width="331" height="155"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                <state key="normal" title="Press here"/>
+                                <state key="normal" title="Press here For location"/>
                                 <connections>
                                     <action selector="sendLocation:" destination="BYZ-38-t0r" eventType="touchDown" id="kZk-F9-kOF"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lwl-LR-XMW">
+                                <rect key="frame" x="93" y="155" width="189" height="137"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="43"/>
+                                <state key="normal" title="Alert"/>
+                                <connections>
+                                    <action selector="sendAlert:" destination="BYZ-38-t0r" eventType="touchDown" id="fFZ-ah-6Es"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -38,15 +47,16 @@
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="x51-q3-eIG" secondAttribute="bottom" constant="170.5" id="16e-wq-j8B"/>
                             <constraint firstItem="x51-q3-eIG" firstAttribute="top" secondItem="yJV-Tx-OLZ" secondAttribute="bottom" constant="8" id="E1o-Xz-sIY"/>
-                            <constraint firstItem="yJV-Tx-OLZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="62" id="K7e-nm-qWY"/>
+                            <constraint firstItem="yJV-Tx-OLZ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="K7e-nm-qWY"/>
                             <constraint firstItem="yJV-Tx-OLZ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="300" id="R96-fG-04f"/>
-                            <constraint firstItem="x51-q3-eIG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="104" id="ZId-ff-Dty"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yJV-Tx-OLZ" secondAttribute="trailing" constant="63" id="qC9-Xd-ghm"/>
-                            <constraint firstItem="x51-q3-eIG" firstAttribute="centerX" secondItem="yJV-Tx-OLZ" secondAttribute="centerX" id="yJ8-mX-Y8f"/>
+                            <constraint firstItem="x51-q3-eIG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="22" id="ZId-ff-Dty"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="yJV-Tx-OLZ" secondAttribute="trailing" id="qC9-Xd-ghm"/>
+                            <constraint firstItem="x51-q3-eIG" firstAttribute="centerX" secondItem="yJV-Tx-OLZ" secondAttribute="centerX" constant="0.5" id="yJ8-mX-Y8f"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="AlertButton" destination="lwl-LR-XMW" id="vlO-By-Kks"/>
                         <outlet property="LocationButton" destination="x51-q3-eIG" id="bxk-56-R1d"/>
                     </connections>
                 </viewController>

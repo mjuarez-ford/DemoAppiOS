@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var LocationButton: UIButton!
+    @IBOutlet weak var AlertButton: UIButton!
     var latitude:Double = 50.953303
     var longitude:Double = 6.920917
     var sumSend:Double = 0.0
@@ -33,6 +34,10 @@ class ViewController: UIViewController {
         ProxyManager.sharedManager.sendLocation(lat: 50.953303, long: 6.920917, name: "Gravenreuthstrassa\(sumSend)")
         
         sumSend = sumSend + 1.0
+    }
+    
+    @IBAction func sendAlert(_ sender: Any) {
+        ProxyManager.sharedManager.sendAlert()
     }
     
 }
